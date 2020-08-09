@@ -3,7 +3,7 @@
 # (C) Marco Vedovati <mv@sba.lat> - 2020
 # SPDX-License-Identifier: Apache-2.0
 #
-# Updates Namecheap DDNS updater
+# Namecheap Dynamic DNS updater
 #
 set -euo pipefail
 
