@@ -8,7 +8,7 @@ because of cache TTL, etc ...
 So, it uses a local file cache storing the last successful IP address sent to Namecheap
 for the host.
 
-## Condfiguration
+## Configuration
 You need to create a `$HOME/ddns-info.txt` file with the Namecheap domain details.
 
 E.g., if your DDNS domain name is `ddns.example.com`, the content of that file
@@ -34,5 +34,6 @@ the DNS domain name, e.g. add to `crontab -e`:
 
 ## Limitations
 - Right now only a single host per machine is supported.
-- Config & cache files paths are hard-coded.
+- Configuration & cache files paths are hard-coded.
 
+## Notes
