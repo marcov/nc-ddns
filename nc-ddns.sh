@@ -63,9 +63,10 @@ main() {
 	echo "INFO: current IP: $currIp"
 
 	local cachedIp=
-	if [ -f "$cachedIpFile" ] && \
-		read -r cachedIp < "$cachedIpFile"; then
+	if [ -f "$cachedIpFile" ]; then
 		echo "INFO: cached IP: $cachedIp"
+		read -r cachedIp < "$cachedIpFile"
+		[ -z "$cachedIpFile" ] && { echo "ERR: cached IP file content is invalid"; exit -1; }
 	else
 		echo "WARN: missing DDNS cached IP file: \"$cachedIpFile\""
 	fi
