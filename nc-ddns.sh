@@ -64,9 +64,12 @@ main() {
 
 	local cachedIp=
 	if [ -f "$cachedIpFile" ]; then
+
+		# read return > 0 when EOF is met...
+		read -r cachedIp < "$cachedIpFile" || true
+
+		[ -z "$cachedIp" ] && { echo "ERR: cached IP file content is invalid"; exit -1; }
 		echo "INFO: cached IP: $cachedIp"
-		read -r cachedIp < "$cachedIpFile"
-		[ -z "$cachedIpFile" ] && { echo "ERR: cached IP file content is invalid"; exit -1; }
 	else
 		echo "WARN: missing DDNS cached IP file: \"$cachedIpFile\""
 	fi
