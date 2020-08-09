@@ -26,10 +26,10 @@ Pass the `-f` flag to force IP to Host update, no matter the cache content.
 
 ### cron
 This is supposed to be used with something like cron with for periodically refreshing
-the DNS domain name, e.g.:
+the DNS domain name, e.g. add to `crontab -e`:
 ```
 # update DDNS
-*/5 * * * *    cd ~nc-ddns && chronic ./nc-ddns.sh | logger -t nc-ddns
+*/5 * * * *    cd ~/nc-ddns && chronic ./nc-ddns.sh | logger -t nc-ddns
 ```
 
 ## Limitations
