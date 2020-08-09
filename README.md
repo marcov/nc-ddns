@@ -1,5 +1,5 @@
 # Namecheap Dynamic DNS Updater
-Just a simple _bash_ + _cURL_ based updater for the Namecheap Dynamic DNS service.
+Just a simple _bash_ + _cURL_ based updater for the [Namecheap](https://www.namecheap.com/) Dynamic DNS service.
 
 This updater does not use _nslookup_ to check for the configured host IP. That's
 because the DNS resolver may respond an outdated IP address value when queried,
