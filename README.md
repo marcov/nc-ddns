@@ -20,8 +20,17 @@ declare -r ddnsPassword="namecheap-ddns-password"
 ```
 The `ddnsPassword` shall be retrieved from the Namecheap web control panel.
 
-## Usage Examples
-### Forcing Updates
+## Usage
+```
+Usage: nc-ddns [-h] [−f] [-n] [−c value]
+
+Options:
+ -h :  help
+ -f :  Force update
+ -n :  Dry-run
+ -c :  Configuration file path
+```
+
 Pass the `-f` flag to force IP to Host update, no matter the cache content.
 
 ### With cron
@@ -37,3 +46,4 @@ the DNS domain name, e.g. add to `crontab -e`:
 - Configuration & cache files paths are hard-coded.
 
 ## Notes
+
