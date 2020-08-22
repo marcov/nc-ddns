@@ -7,11 +7,13 @@
 #
 set -euo pipefail
 
-declare -r ddnsInfoFile="$HOME/ddns-info.txt"
-declare -r cachedIpFile="$XDG_RUNTIME_DIR/ddns-ip"
+declare -r myName="nc-ddns"
+declare configFile="$HOME/ddns-info.txt"
+declare -r cachedIpFile="${XDG_RUNTIME_DIR:-/run/user/`id -u`}/ddns-ip"
 declare -r urlPrefix="https://dynamicdns.park-your-domain.com/update"
 declare -r respSuccessPattern="<ErrCount>0</ErrCount>"
 declare -A urlParams=( [host]="" [domain]="" [password]="" [ip]="" )
+declare dryRun=
 
 get_ip() {
 	curl -fsSL "icanhazip.com"
@@ -33,12 +35,22 @@ update_ip() {
 
 	echo "INFO: cURL URL: $fullUrl"
 
+	curlCmd=( \
+		curl \
+		-fsSL \
+		"$fullUrl" \
+	)
+
+	if [ -n "$dryRun" ]; then
+		echo "DRY-RUN: ${curlCmd[@]}"
+		return
+	fi
+
 	local response=
 	read -r response <<< \
-		"$(curl -fsSL "$fullUrl" || { echo "ERR: cURL for IP update failed"; exit -1; })"
+		"$(${curlCmd[@]} || { echo "ERR: cURL for IP update failed"; exit -1; })"
 
 	echo "INFO: got response: $response"
-
 	[[ $response =~ $respSuccessPattern ]] ||
 		{ echo "ERR: cURL response is not successful: \"$response\""; exit -1; }
 }
@@ -47,8 +59,8 @@ setParams() {
 	local newIp="$1"
 	[ -n "$newIp" ] || { echo "ERR: need an IP"; exit -1; }
 
-	[ -f "$ddnsInfoFile" ] || { echo "ERR: missing DDNS info file \"$ddnsInfoFile\""; exit -1; }
-	. "$ddnsInfoFile"
+	[ -f "$configFile" ] || { echo "ERR: missing DDNS info file \"$configFile\""; exit -1; }
+	. "$configFile"
 
 	urlParams[host]="$ddnsHost"
 	urlParams[domain]="$ddnsDomain"
@@ -58,6 +70,7 @@ setParams() {
 }
 
 main() {
+	parse_args "$@"
 	local currIp=`get_ip`
 	[ -n "$currIp" ] || { echo "ERR: failed to get IP"; exit -1; }
 	echo "INFO: current IP: $currIp"
@@ -82,9 +95,42 @@ main() {
 	echo "DONE"
 }
 
-[ "${1:-}" = "-f" ] &&
-	{ echo "INFO: forcing update by deleting cached IP file...";
-		rm -f "$cachedIpFile"; } ||
-	{ echo "INFO: normal update mode"; }
+parse_args() {
+	OPTIND=1
+	while getopts hfnc: name
+	do
+		#echo "ARG: $name"
+		case $name in
+			f)
+				echo "INFO: forcing update by deleting cached IP file";
+				rm -f "$cachedIpFile"
+				;;
 
-main
+			n)
+				dryRun=1
+				echo "INFO: Dry run"
+				;;
+
+			c)
+				configFile="$OPTARG"
+				echo "INFO: overriding config file path: ${configFile}"
+				;;
+
+			h | ?)
+				printf "\nUsage: %s [-h] [−f] [-n] [−c value]\n" "$myName"
+				printf "
+Options:
+ -h :  help
+ -f :  Force update
+ -n :  Dry-run
+ -c :  Configuration file path\n\n"
+				exit 2
+				;;
+		esac
+	done
+
+	shift "$(( $OPTIND - 1 ))"
+	[ -z "$*" ] || { echo "ERR: non-option arguments found: \"$*\""; exit 2; }
+}
+
+main "$@"
