@@ -1,12 +1,14 @@
 # Namecheap Dynamic DNS Updater
 Just a simple _bash_ + _cURL_ based updater for the [Namecheap](https://www.namecheap.com/) Dynamic DNS service.
 
-This updater does not use _nslookup_ to check for the configured host IP. That's
-because the DNS resolver may respond an outdated IP address value when queried,
-because of cache TTL, etc ...
+This client stores the last successful IP address sent to Namecheap in a local file
+cache.
+The current public IP is sent to Namecheap **only if** this IP differs from the cached IP.
+The cached IP is invalidated using `-f` flag, or when it differs from the dynamic hostname **resolved** IP.
 
-So, it uses a local file cache storing the last successful IP address sent to Namecheap
-for the host.
+<!--a DNS resolver may respond with a not
+up-to-date IP address value when queried, because of cache TTL, etc ...
+-->
 
 ## Configuration
 You need to create a `$HOME/ddns-info.txt` file with the Namecheap domain details.
@@ -22,13 +24,14 @@ The `ddnsPassword` shall be retrieved from the Namecheap web control panel.
 
 ## Usage
 ```
-Usage: nc-ddns [-h] [−f] [-n] [−c value]
+Usage: nc-ddns [-c config-file] [-d] [−n] [-h] [−f]
 
 Options:
- -h :  help
- -f :  Force update
- -n :  Dry-run
  -c :  Configuration file path
+ -d :  print debug info
+ -f :  Force update (invalidate the cached IP)
+ -h :  help
+ -n :  Dry-run
 ```
 
 Pass the `-f` flag to force IP to Host update, no matter the cache content.
