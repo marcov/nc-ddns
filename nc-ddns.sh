@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 #
 # (C) Marco Vedovati <mv@sba.lat> - 2020
 # SPDX-License-Identifier: Apache-2.0
