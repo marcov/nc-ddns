@@ -11,7 +11,7 @@ up-to-date IP address value when queried, because of cache TTL, etc ...
 -->
 
 ## Configuration
-You need to create a `$HOME/ddns-info.txt` file with the Namecheap domain details.
+You need to create a `ddns-info.txt` file with the Namecheap domain details.
 
 E.g., if your DDNS domain name is `ddns.example.com`, the content of that file
 should be:
@@ -27,8 +27,8 @@ The `ddnsPassword` shall be retrieved from the Namecheap web control panel.
 Usage: nc-ddns [-c config-file] [-d] [−n] [-h] [−f]
 
 Options:
- -c :  Configuration file path
- -d :  print debug info
+ -c :  Configuration file path (default path: '$HOME/ddns-info.txt')
+ -d :  print debug info (default: false)
  -f :  Force update (invalidate the cached IP)
  -h :  help
  -n :  Dry-run
@@ -46,7 +46,7 @@ the DNS domain name, e.g. add to `crontab -e`:
 
 ## Limitations
 - Right now only a single host per machine is supported.
-- Configuration & cache files paths are hard-coded.
+- Cache file path is hard-coded.
 
 ## Notes
 

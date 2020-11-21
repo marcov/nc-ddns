@@ -159,8 +159,8 @@ parse_args() {
 				printf "\nUsage: %s [-c config-file] [-d] [−n] [-h] [−f]\n" "$myName"
 				printf "
 Options:
- -c :  Configuration file path
- -d :  print debug info
+ -c :  Configuration file path (default path: '$HOME/ddns-info.txt')
+ -d :  print debug info (default: false)
  -f :  Force update (invalidate the cached IP)
  -h :  help
  -n :  Dry-run
