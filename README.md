@@ -1,13 +1,15 @@
 # Namecheap Dynamic DNS Updater
-Just a simple _bash_ + _cURL_ based updater for the [Namecheap](https://www.namecheap.com/) Dynamic DNS service.
+Just a simple _bash_ + _cURL_ + _dig_ based updater for the
+[Namecheap](https://www.namecheap.com/) Dynamic DNS service.
 
 This client stores the last successful IP address sent to Namecheap in a local file
 cache.
 The current public IP is sent to Namecheap **only if** this IP differs from the cached IP.
-The cached IP is invalidated using `-f` flag, or when it differs from the dynamic hostname **resolved** IP.
+The cached IP is invalidated using `-f` flag, or when it differs from the dynamic
+hostname **resolved** IP.
 
-<!--a DNS resolver may respond with a not
-up-to-date IP address value when queried, because of cache TTL, etc ...
+<!-- a DNS resolver may respond with a not up-to-date IP address value when queried,
+because of cache TTL, etc ...
 -->
 
 ## Configuration
