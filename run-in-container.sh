@@ -1,9 +1,11 @@
 #!/bin/bash
 
 set -euo pipefail
-set -x
 
+declare -r arch="$(arch)"
 declare -r scriptDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
+set -x
 
 docker run \
     --rm \
@@ -17,6 +19,6 @@ docker run \
     \
     --name=nc-ddns \
     \
-    pullme/nc-ddns:latest \
+    pullme/"${arch}"-nc-ddns:latest \
     \
     /nc-ddns/nc-ddns.sh -c /nc-ddns/ddns-info.txt
