@@ -8,7 +8,7 @@
 set -euo pipefail
 
 declare -r myName="nc-ddns"
-declare configFile="$HOME/ddns-info.txt"
+declare configFile=
 declare -r cachedIpFile="${XDG_RUNTIME_DIR:-/tmp}/ddns-ip"
 declare -r urlPrefix="https://dynamicdns.park-your-domain.com/update"
 declare -r respSuccessPattern="<ErrCount>0</ErrCount>"
@@ -63,12 +63,23 @@ read_config() {
 	local ip="$1"
 	[ -n "$ip" ] || { echo "ERR: need an IP"; exit -1; }
 
-	[ -f "$configFile" ] || { echo "ERR: missing DDNS info file \"$configFile\""; exit -1; }
-	. "$configFile"
+	if [ -f "$configFile" ]; then
+    	. "$configFile"
+    else
+        echo "WARN: missing DDNS info file. Using config from env variables"
 
-	urlParams[host]="$ddnsHost"
-	urlParams[domain]="$ddnsDomain"
-	urlParams[password]="$ddnsPassword"
+        if [ -z ${NC_DDNS_HOST:-} ] ||
+           [ -z ${NC_DDNS_DOMAIN:-} ] ||
+           [ -z ${NC_DDNS_PASSWORD:-} ]; then
+            echo "ERR: could not get DDNS confg from env variables"
+            exit -1
+        fi
+
+    fi
+
+	urlParams[host]="$NC_DDNS_HOST"
+	urlParams[domain]="$NC_DDNS_DOMAIN"
+	urlParams[password]="$NC_DDNS_PASSWORD"
 
 	urlParams[ip]="$1"
 }
@@ -83,8 +94,11 @@ ip_is_cached() {
 		# read return > 0 when EOF is met...
 		read -r cachedIp < "$cachedIpFile" || true
 
-		[ -z "$cachedIp" ] && { echo "ERR: cached IP file content is invalid"; exit -1; }
-		info "cached IP: $cachedIp"
+		if [ -z "$cachedIp" ]; then
+            echo "WARN: cached IP file content is invalid"
+        else
+		    info "cached IP: $cachedIp"
+        fi
 	else
 		echo "WARN: missing DDNS cached IP file: \"$cachedIpFile\""
 	fi
@@ -159,7 +173,7 @@ parse_args() {
 				printf "\nUsage: %s [-c config-file] [-d] [−n] [-h] [−f]\n" "$myName"
 				printf "
 Options:
- -c :  Configuration file path (default path: '$HOME/ddns-info.txt')
+ -c :  Configuration file path (default: get config via env variables)
  -d :  print debug info (default: false)
  -f :  Force update (invalidate the cached IP)
  -h :  help

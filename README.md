@@ -13,23 +13,24 @@ because of cache TTL, etc ...
 -->
 
 ## Configuration
-You need to create a `ddns-info.txt` file with the Namecheap domain details.
+Provide a configuration via a set of environment variables, or using a configuration
+file (with the same variables defined).
 
-E.g., if your DDNS domain name is `ddns.example.com`, the content of that file
-should be:
+E.g., if your DDNS domain name is `ddns.example.com`, the content of the env variables
+or of the configuration files should be:
 ```
-declare -r ddnsHost="ddns"
-declare -r ddnsDomain="example.com"
-declare -r ddnsPassword="namecheap-ddns-password"
+NC_DDNS_HOST=myhost
+NC_DDNS_DOMAIN=example.com
+NC_DDNS_PASSWORD=namecheap-ddns-password
 ```
-The `ddnsPassword` shall be retrieved from the Namecheap web control panel.
+The `NC_DDNS_PASSWORD` shall be retrieved from the Namecheap web control panel.
 
 ## Usage
 ```
 Usage: nc-ddns [-c config-file] [-d] [−n] [-h] [−f]
 
 Options:
- -c :  Configuration file path (default path: '$HOME/ddns-info.txt')
+ -c :  Configuration file path (default: get config via env variables)
  -d :  print debug info (default: false)
  -f :  Force update (invalidate the cached IP)
  -h :  help
