@@ -50,9 +50,9 @@ update_ip() {
 		return
 	fi
 
-	local response=
-	read -r response <<< \
-		"$(${curlCmd[@]} || { echo "ERR: cURL for IP update failed"; exit -1; })"
+	local response
+    response="$(${curlCmd[@]})" ||
+        { echo "ERR: cURL command for IP update failed"; exit -1; }
 
 	info "got response: $response"
 	[[ $response =~ $respSuccessPattern ]] ||
@@ -139,7 +139,7 @@ main() {
 	update_ip
 
 	echo -n "$currIp" > "$cachedIpFile"
-	echo "DONE"
+	echo "SUCCESS"
 }
 
 parse_args() {
